@@ -139,5 +139,60 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet]
+        public IHttpActionResult GetUserByID()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                // string ID = headers.GetValues("Safety").First();
+                string ID = headers.GetValues("ID").First();
+                return Ok(WorkService.GetUserByID(int.Parse(ID)));
+                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult UpdateUser(UserDto user)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                // string ID = headers.GetValues("Safety").First();
+                //string ID = headers.GetValues("Safety").First();
+                WorkService.UpdateUser(user);
+                return Ok();
+                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult SetLastLogin()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                // string ID = headers.GetValues("Safety").First();
+                string ID = headers.GetValues("ID").First();
+                return Ok(WorkService.SetLastLogin(int.Parse(ID)));
+                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

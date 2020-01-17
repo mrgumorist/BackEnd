@@ -54,5 +54,29 @@ namespace BackEnd.Services
             apiContext.Users.Add(kek);
             apiContext.SaveChanges();
         }
+        public static UserDto GetUserByID(int ID)
+        {
+            User lol = apiContext.Users.First(x => x.ID == ID);
+            UserDto user = new UserDto() { ID = lol.ID, LastLogin = lol.LastLogin, Login = lol.Login, Name = lol.Name, Password = lol.Password, Surname = lol.Surname, UsersType = lol.UsersType.Name };
+            return user;
+        }
+        public static void UpdateUser(UserDto user)
+        {
+            int id = int.Parse(user.UsersType);
+            var UsersType = apiContext.UsersTypes.First(x => x.Id == id);
+            var kek = new User() { Name = user.Name, Login = user.Login, LastLogin = user.LastLogin, Password = user.Password, Surname = user.Surname, UsersType = UsersType, ID=user.ID };
+            apiContext.Users.First(x => x.ID == user.ID).LastLogin = kek.LastLogin;
+            apiContext.Users.First(x => x.ID == user.ID).Login = kek.Login;
+            apiContext.Users.First(x => x.ID == user.ID).Password = kek.Password;
+            apiContext.Users.First(x => x.ID == user.ID).Name = kek.Name;
+            apiContext.Users.First(x => x.ID == user.ID).Surname = kek.Surname;
+            apiContext.Users.First(x => x.ID == user.ID).UsersType = kek.UsersType;
+            apiContext.SaveChanges();
+        }
+        public static void SetLastLogin(int ID)
+        {
+            apiContext.Users.First(x => x.ID ==ID).LastLogin = DateTime.Now;
+        }
+        
     }
 }
