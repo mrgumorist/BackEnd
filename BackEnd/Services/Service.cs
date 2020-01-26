@@ -76,7 +76,18 @@ namespace BackEnd.Services
         public static void SetLastLogin(int ID)
         {
             apiContext.Users.First(x => x.ID ==ID).LastLogin = DateTime.Now;
+            apiContext.SaveChanges();
         }
-        
+        public static void ChangePasswordById(int ID, string newpass)
+        {
+            apiContext.Users.First(x => x.ID == ID).Password = newpass;
+            apiContext.SaveChanges();
+        }
+        public static void ChangeNameAndSurname(int ID, string name, string surname)
+        {
+            apiContext.Users.First(x => x.ID == ID).Name = name;
+            apiContext.Users.First(x => x.ID == ID).Surname = surname;
+            apiContext.SaveChanges();
+        }
     }
 }

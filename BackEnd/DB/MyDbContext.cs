@@ -8,16 +8,19 @@ using System.Web;
 
 namespace BackEnd.DB
 {
-  
-        public class ApiContext : DbContext
+
+    public class ApiContext : DbContext
+    {
+        public ApiContext() : base("DbbContext")
         {
-            public ApiContext() : base("DbbContext")
-            {
 
-            }
-
-            public DbSet<User> Users { get; set; }
-            public DbSet<UsersType> UsersTypes { get; set; }
         }
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<UsersType> UsersTypes { get; set; }
+        public DbSet<Product> ProductsAvaliale { get; set; }
+        public DbSet<ProductReport> Reports { get; set; }
+    }
+    
     
 }

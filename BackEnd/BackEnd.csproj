@@ -169,6 +169,8 @@
     <Compile Include="Controllers\ApiiController.cs" />
     <Compile Include="DB\MyDbContext.cs" />
     <Compile Include="Entities\Login.cs" />
+    <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\ProductReport.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
