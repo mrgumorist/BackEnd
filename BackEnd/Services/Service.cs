@@ -140,12 +140,58 @@ namespace BackEnd.Services
         }
         public static int GetIdOfCheck()
         {
-            Check check = new Check();
-            check.DateCreatingOfCheck = DateTime.Now;
-            check.DateCloseOfCheck = DateTime.Now;
+            Check check = new Check
+            {
+                DateCreatingOfCheck = DateTime.Now,
+                DateCloseOfCheck = DateTime.Now
+            };
             apiContext.Checks.Add(check);
             apiContext.SaveChanges();
             return check.ID;
+        }
+        public static List<ProductDto> GetProductDtosByQuery(string Query)
+        {
+            List<ProductDto> products = new List<ProductDto>();
+            foreach (var item in apiContext.ProductsAvaliale)
+            {
+                if(item.SpecialCode== Query)
+                {
+                    ProductDto productDto = new ProductDto();
+                    productDto.CameToTheStorage = item.CameToTheStorage;
+                    productDto.Count = item.Count;
+                    productDto.Description = item.Description;
+                    productDto.ID = item.ID;
+                    productDto.IsNumurable = item.IsNumurable;
+                    productDto.Massa = item.Massa;
+                    productDto.Name = item.Name;
+                    productDto.SpecialCode = item.SpecialCode;
+                    productDto.Price = item.Price;
+                    products.Add(productDto);
+                }
+            }
+            return products;
+        }
+        public static List<ProductDto>  GetProductDtosByName(string Query)
+        {
+            List<ProductDto> products = new List<ProductDto>();
+            foreach (var item in apiContext.ProductsAvaliale)
+            {
+                if (item.Name.ToLower().Contains(Query.ToLower()))
+                {
+                    ProductDto productDto = new ProductDto();
+                    productDto.CameToTheStorage = item.CameToTheStorage;
+                    productDto.Count = item.Count;
+                    productDto.Description = item.Description;
+                    productDto.ID = item.ID;
+                    productDto.IsNumurable = item.IsNumurable;
+                    productDto.Massa = item.Massa;
+                    productDto.Name = item.Name;
+                    productDto.SpecialCode = item.SpecialCode;
+                    productDto.Price = item.Price;
+                    products.Add(productDto);
+                }
+            }
+            return products;
         }
     }
 }

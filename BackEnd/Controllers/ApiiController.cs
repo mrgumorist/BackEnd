@@ -314,9 +314,59 @@ namespace BackEnd.Controllers
 
             if (headers.Contains("Safety"))
             {
-                string ID = headers.GetValues("ID").First();
+                //string ID = headers.GetValues("ID").First();
                 string Id = WorkService.GetIdOfCheck().ToString();
                 return Ok(Id);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult GetBySpecialCode()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety")&&headers.Contains("Querry"))
+            {
+                string Querry = headers.GetValues("Querry").First();
+                var list = WorkService.GetProductDtosByQuery(Querry);
+                if (list.Count!=0)
+                {
+                    return Ok(list);
+                }
+                else
+                {
+                    return Ok(0);
+                }
+                
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult GetByName()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety") && headers.Contains("Querry"))
+            {
+                string Querry = headers.GetValues("Querry").First();
+                var list = WorkService.GetProductDtosByName(Querry);
+                if (list.Count != 0)
+                {
+                    return Ok(list);
+                }
+                else
+                {
+                    return Ok(0);
+                }
+
             }
             else
             {

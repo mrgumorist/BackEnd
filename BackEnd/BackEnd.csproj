@@ -223,6 +223,10 @@
     <Compile Include="Migrations\202002161556001_check.designer.cs">
       <DependentUpon>202002161556001_check.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002171931353_checkfe.cs" />
+    <Compile Include="Migrations\202002171931353_checkfe.designer.cs">
+      <DependentUpon>202002171931353_checkfe.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsDto\CheckDto.cs" />
     <Compile Include="ModelsDto\ProductDto.cs" />
@@ -350,6 +354,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002161556001_check.resx">
       <DependentUpon>202002161556001_check.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002171931353_checkfe.resx">
+      <DependentUpon>202002171931353_checkfe.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
