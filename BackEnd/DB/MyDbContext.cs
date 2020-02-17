@@ -20,6 +20,11 @@ namespace BackEnd.DB
         public DbSet<UsersType> UsersTypes { get; set; }
         public DbSet<Product> ProductsAvaliale { get; set; }
         public DbSet<ProductReport> Reports { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionType> TransactionTypes { get; set; }
+        public DbSet<ProductInCheck> ProductsInCheck{ get; set; }
+        public DbSet<Check> Checks { get; set; }
+        public DbSet<Log> Logs { get; set; }
     }
     
     

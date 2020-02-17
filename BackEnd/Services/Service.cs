@@ -20,7 +20,7 @@ namespace BackEnd.Services
                 int ID = apiContext.Users.First(x => x.Login == login && x.Password == password).ID;
                 return ID;
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException ee)
             {
                 return -1;
             }
@@ -88,6 +88,64 @@ namespace BackEnd.Services
             apiContext.Users.First(x => x.ID == ID).Name = name;
             apiContext.Users.First(x => x.ID == ID).Surname = surname;
             apiContext.SaveChanges();
+        }
+        public static List<ProductDto> GetProducts()
+        {
+            var list = apiContext.ProductsAvaliale.ToList();
+            List<ProductDto> results = new List<ProductDto>();
+            foreach (var item in list)
+            {
+                ProductDto productDto = new ProductDto();
+                productDto.CameToTheStorage = item.CameToTheStorage;
+                productDto.Count = item.Count;
+                productDto.Description = item.Description;
+                productDto.ID = item.ID;
+                productDto.IsNumurable = item.IsNumurable;
+                productDto.Massa = item.Massa;
+                productDto.Name = item.Name;
+                productDto.SpecialCode = item.SpecialCode;
+                productDto.Price = item.Price;
+                results.Add(productDto);
+            }
+            return results;
+        }
+        public static bool IsExists(string specialcode)
+        {
+            List<Product> results =  apiContext.ProductsAvaliale.Where(x => x.SpecialCode == specialcode).ToList();
+            if(results.Count==0)
+            {
+                return false;
+            }
+            return true;
+        }
+        public static void AddProduct(ProductDto product)
+        {
+            Product product1 = new Product() { Name = product.Name, Count = product.Count, Description = product.Description, IsNumurable = product.IsNumurable, Massa = product.Massa, SpecialCode = product.SpecialCode, Price=product.Price};
+            apiContext.ProductsAvaliale.Add(product1);
+            apiContext.SaveChanges();
+        }
+        public static void ChangeProduct(ProductDto product)
+        {
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Massa = product.Massa;
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Name = product.Name;
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).SpecialCode = product.SpecialCode;
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Count = product.Count;
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Description = product.Description;
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Price = product.Price;
+            apiContext.SaveChanges();
+        }
+        public static string GetPassByID(int ID)
+        {
+            return apiContext.Users.First(x => x.ID == ID).Password;
+        }
+        public static int GetIdOfCheck()
+        {
+            Check check = new Check();
+            check.DateCreatingOfCheck = DateTime.Now;
+            check.DateCloseOfCheck = DateTime.Now;
+            apiContext.Checks.Add(check);
+            apiContext.SaveChanges();
+            return check.ID;
         }
     }
 }

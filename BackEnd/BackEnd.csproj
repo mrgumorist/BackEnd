@@ -168,9 +168,14 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ApiiController.cs" />
     <Compile Include="DB\MyDbContext.cs" />
+    <Compile Include="Entities\Check.cs" />
+    <Compile Include="Entities\Log.cs" />
     <Compile Include="Entities\Login.cs" />
     <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\ProductInCheck.cs" />
     <Compile Include="Entities\ProductReport.cs" />
+    <Compile Include="Entities\Transaction.cs" />
+    <Compile Include="Entities\TransactionType.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -182,7 +187,46 @@
     <Compile Include="Migrations\202001161701445_assf.designer.cs">
       <DependentUpon>202001161701445_assf.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001261514119_second.cs" />
+    <Compile Include="Migrations\202001261514119_second.designer.cs">
+      <DependentUpon>202001261514119_second.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001271750183_fefw4we.cs" />
+    <Compile Include="Migrations\202001271750183_fefw4we.designer.cs">
+      <DependentUpon>202001271750183_fefw4we.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001271804316_feee.cs" />
+    <Compile Include="Migrations\202001271804316_feee.designer.cs">
+      <DependentUpon>202001271804316_feee.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001271805320_feeee.cs" />
+    <Compile Include="Migrations\202001271805320_feeee.designer.cs">
+      <DependentUpon>202001271805320_feeee.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001301415493_feeee1.cs" />
+    <Compile Include="Migrations\202001301415493_feeee1.designer.cs">
+      <DependentUpon>202001301415493_feeee1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001301427009_feeeeae.cs" />
+    <Compile Include="Migrations\202001301427009_feeeeae.designer.cs">
+      <DependentUpon>202001301427009_feeeeae.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002041050289_lel.cs" />
+    <Compile Include="Migrations\202002041050289_lel.designer.cs">
+      <DependentUpon>202002041050289_lel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002161542222_lol.cs" />
+    <Compile Include="Migrations\202002161542222_lol.designer.cs">
+      <DependentUpon>202002161542222_lol.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002161556001_check.cs" />
+    <Compile Include="Migrations\202002161556001_check.designer.cs">
+      <DependentUpon>202002161556001_check.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ModelsDto\CheckDto.cs" />
+    <Compile Include="ModelsDto\ProductDto.cs" />
+    <Compile Include="ModelsDto\ProductInCheckDto.cs" />
     <Compile Include="ModelsDto\UserDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Service.cs" />
@@ -223,12 +267,14 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
+    <Content Include="web.config">
+      <SubType>Designer</SubType>
     </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
+    <Content Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </Content>
+    <Content Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
     </Content>
     <Content Include="Areas\HelpPage\Views\_ViewStart.cshtml" />
     <Content Include="Content\Site.css" />
@@ -277,6 +323,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001161701445_assf.resx">
       <DependentUpon>202001161701445_assf.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001261514119_second.resx">
+      <DependentUpon>202001261514119_second.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001271750183_fefw4we.resx">
+      <DependentUpon>202001271750183_fefw4we.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001271804316_feee.resx">
+      <DependentUpon>202001271804316_feee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001271805320_feeee.resx">
+      <DependentUpon>202001271805320_feeee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001301415493_feeee1.resx">
+      <DependentUpon>202001301415493_feeee1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001301427009_feeeeae.resx">
+      <DependentUpon>202001301427009_feeeeae.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002041050289_lel.resx">
+      <DependentUpon>202002041050289_lel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002161542222_lol.resx">
+      <DependentUpon>202002161542222_lol.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002161556001_check.resx">
+      <DependentUpon>202002161556001_check.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

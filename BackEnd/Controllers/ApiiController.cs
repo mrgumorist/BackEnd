@@ -44,12 +44,12 @@ namespace BackEnd.Controllers
             var re = Request;
             var headers = re.Headers;
 
-            if (headers.Contains("Login")&& headers.Contains("Password"))
+            if (headers.Contains("Login") && headers.Contains("Password"))
             {
                 string login = headers.GetValues("Login").First();
                 string password = headers.GetValues("Password").First();
-                int res =  WorkService.Login(login, password);
-                if(res!=-1)
+                int res = WorkService.Login(login, password);
+                if (res != -1)
                 {
                     return Ok(res);
                 }
@@ -60,7 +60,7 @@ namespace BackEnd.Controllers
             }
             else
             {
-                 return Ok(-1);
+                return Ok(-1);
             }
             //return -1;
 
@@ -75,8 +75,8 @@ namespace BackEnd.Controllers
             {
                 string ID = headers.GetValues("ID").First();
 
-                return Ok( WorkService.GetTypeById(int.Parse(ID)));
-              
+                return Ok(WorkService.GetTypeById(int.Parse(ID)));
+
             }
             else
             {
@@ -91,10 +91,7 @@ namespace BackEnd.Controllers
 
             if (headers.Contains("Safety"))
             {
-                //string ID = headers.GetValues("Safety").First();
                 return Ok(WorkService.GetUsers());
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
-
             }
             else
             {
@@ -107,13 +104,13 @@ namespace BackEnd.Controllers
             var re = Request;
             var headers = re.Headers;
 
-            if (headers.Contains("Safety")&&headers.Contains("ID"))
+            if (headers.Contains("Safety") && headers.Contains("ID"))
             {
-               // string ID = headers.GetValues("Safety").First();
+
                 string ID = headers.GetValues("ID").First();
                 WorkService.DeleteById(int.Parse(ID));
                 return Ok();
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+
             }
             else
             {
@@ -126,13 +123,11 @@ namespace BackEnd.Controllers
             var re = Request;
             var headers = re.Headers;
 
-            if (headers.Contains("Safety") )
+            if (headers.Contains("Safety"))
             {
-                // string ID = headers.GetValues("Safety").First();
-                //string ID = headers.GetValues("Safety").First();
                 WorkService.AddUser(user);
                 return Ok();
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+
             }
             else
             {
@@ -147,10 +142,10 @@ namespace BackEnd.Controllers
 
             if (headers.Contains("Safety"))
             {
-                // string ID = headers.GetValues("Safety").First();
+
                 string ID = headers.GetValues("ID").First();
                 return Ok(WorkService.GetUserByID(int.Parse(ID)));
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+
             }
             else
             {
@@ -165,11 +160,8 @@ namespace BackEnd.Controllers
 
             if (headers.Contains("Safety"))
             {
-                // string ID = headers.GetValues("Safety").First();
-                //string ID = headers.GetValues("Safety").First();
                 WorkService.UpdateUser(user);
                 return Ok();
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
             }
             else
             {
@@ -184,11 +176,11 @@ namespace BackEnd.Controllers
 
             if (headers.Contains("Safety"))
             {
-                // string ID = headers.GetValues("Safety").First();
+
                 string ID = headers.GetValues("ID").First();
                 WorkService.SetLastLogin(int.Parse(ID));
                 return Ok();
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+
             }
             else
             {
@@ -203,12 +195,11 @@ namespace BackEnd.Controllers
 
             if (headers.Contains("Safety"))
             {
-                // string ID = headers.GetValues("Safety").First();
+
                 string ID = headers.GetValues("ID").First();
                 string NEWPASS = headers.GetValues("NEWPASS").First();
                 WorkService.ChangePasswordById(int.Parse(ID), NEWPASS);
                 return Ok();
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
             }
             else
             {
@@ -223,13 +214,109 @@ namespace BackEnd.Controllers
 
             if (headers.Contains("Safety"))
             {
-                // string ID = headers.GetValues("Safety").First();
                 string ID = headers.GetValues("ID").First();
                 string Name = headers.GetValues("Name").First();
                 string Surname = headers.GetValues("Surname").First();
                 WorkService.ChangeNameAndSurname(int.Parse(ID), Name, Surname);
                 return Ok();
-                //return Ok(WorkService.GetTypeById(int.Parse(ID)));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult GetProducts()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                return Ok(WorkService.GetProducts());
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IHttpActionResult IsExists()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                string SpecialCode = headers.GetValues("SpecialCode").First();
+                return Ok(WorkService.IsExists(SpecialCode));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult AddProduct(ProductDto product)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                WorkService.AddProduct(product);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        public IHttpActionResult ChangeProduct(ProductDto product)
+        {
+            var re = Request;
+            var headers = re.Headers;
+            if (headers.Contains("Safety"))
+            {
+                WorkService.ChangeProduct(product);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult GetPasswordById()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                string ID = headers.GetValues("ID").First();
+                string pass = WorkService.GetPassByID(int.Parse(ID));
+                return Ok(pass);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult GetIdOfCheck()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                string ID = headers.GetValues("ID").First();
+                string Id = WorkService.GetIdOfCheck().ToString();
+                return Ok(Id);
             }
             else
             {

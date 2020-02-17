@@ -12,12 +12,15 @@ namespace BackEnd.Entities
     {
         [Key]
         public int ID { get; set; }
+        public int? IDOfProduct { get; set; }
         public string Name { get; set; }
         public string SpecialCode { get; set; }
         public string Description { get; set; }
-        public int Count { get; set; } = 0; //Кількість або скільки грам
-        public double Massa { get; set; } = 0; //Кількість або скільки грам
-        public bool IsNumurable { get; set; } //1 - mass
-        public DateTime DateOfIt { get; set; }
+        public int? Count { get; set; } = 0; //Кількість або скільки грам
+        public double? Massa { get; set; } = 0; //Кількість або скільки грам
+        public bool? IsNumurable { get; set; } //1 - mass
+        public double Price { get; set; } //Price by kg or 1
+        public DateTime? DateOfIt { get; set; }
+        public virtual Transaction transaction { get; set; }
     }
 }
