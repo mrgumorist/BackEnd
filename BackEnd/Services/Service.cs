@@ -193,5 +193,14 @@ namespace BackEnd.Services
             }
             return products;
         }
+        public static double? MaxWeight(int ID)
+        {
+            return apiContext.ProductsAvaliale.First(x => x.ID == ID).Massa;
+        }
+        public static int? MaxCount(int ID)
+        {
+            return apiContext.ProductsAvaliale.First(x => x.ID == ID).Count;
+        }
+        
     }
 }

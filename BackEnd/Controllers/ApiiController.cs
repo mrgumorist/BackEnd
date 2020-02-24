@@ -373,5 +373,39 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet]
+        public IHttpActionResult GetMaxWeigthById()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety") )
+            {
+                string ID = headers.GetValues("ID").First();
+                return Ok(WorkService.MaxWeight(int.Parse(ID)));
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult GetMaxCountById()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                string ID = headers.GetValues("ID").First();
+                return Ok(WorkService.MaxCount(int.Parse(ID)));
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }
