@@ -25,6 +25,8 @@ namespace BackEnd.DB
         public DbSet<ProductInCheck> ProductsInCheck{ get; set; }
         public DbSet<Check> Checks { get; set; }
         public DbSet<Log> Logs { get; set; }
+        public DbSet<Credit> Creditors { get; set; }
+        
     }
     
     

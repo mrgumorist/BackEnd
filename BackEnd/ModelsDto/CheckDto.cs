@@ -9,8 +9,9 @@ namespace BackEnd.ModelsDto
     {
         public int ID { get; set; }
         public ICollection<ProductInCheckDto> Products { get; set; }
-        public double SumPrice { get; set; } = 0;
+        public double? SumPrice { get; set; } = 0;
         public DateTime? DateCreatingOfCheck { get; set; }
         public DateTime? DateCloseOfCheck { get; set; }
+        public string TypeOfPay { get; set; }
     }
 }

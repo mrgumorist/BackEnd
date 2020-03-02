@@ -1,5 +1,6 @@
 ﻿using BackEnd.ModelsDto;
 using BackEnd.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -241,15 +242,15 @@ namespace BackEnd.Controllers
             }
         }
 
-        [HttpGet]
-        public IHttpActionResult IsExists()
+        [HttpPost]
+        public IHttpActionResult IsExists([FromBody] string SpecialCode)
         {
             var re = Request;
             var headers = re.Headers;
 
             if (headers.Contains("Safety"))
             {
-                string SpecialCode = headers.GetValues("SpecialCode").First();
+                //string SpecialCode = headers.GetValues("SpecialCode").First();
                 return Ok(WorkService.IsExists(SpecialCode));
             }
             else
@@ -323,15 +324,15 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
-        [HttpGet]
-        public IHttpActionResult GetBySpecialCode()
+        [HttpPost]
+        public IHttpActionResult GetBySpecialCode([FromBody]string Querry)
         {
             var re = Request;
             var headers = re.Headers;
 
-            if (headers.Contains("Safety")&&headers.Contains("Querry"))
+            if (headers.Contains("Safety"))
             {
-                string Querry = headers.GetValues("Querry").First();
+                //string Querry = headers.GetValues("Querry").First();
                 var list = WorkService.GetProductDtosByQuery(Querry);
                 if (list.Count!=0)
                 {
@@ -348,15 +349,14 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
-        [HttpGet]
-        public IHttpActionResult GetByName()
+        [HttpPost]
+        public IHttpActionResult GetByName([FromBody]string Querry)
         {
             var re = Request;
             var headers = re.Headers;
 
-            if (headers.Contains("Safety") && headers.Contains("Querry"))
+            if (headers.Contains("Safety"))
             {
-                string Querry = headers.GetValues("Querry").First();
                 var list = WorkService.GetProductDtosByName(Querry);
                 if (list.Count != 0)
                 {
@@ -400,6 +400,79 @@ namespace BackEnd.Controllers
             {
                 string ID = headers.GetValues("ID").First();
                 return Ok(WorkService.MaxCount(int.Parse(ID)));
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult EndCheck(List<string>str)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                var products = JsonConvert.DeserializeObject<List<ProductInCheckDto>>(str[0]);
+                var check = JsonConvert.DeserializeObject<CheckDto>(str[1]);
+                WorkService.EndCheck(products, check);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult EndCheckCredit(List<string> str)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                var products = JsonConvert.DeserializeObject<List<ProductInCheckDto>>(str[0]);
+                var check = JsonConvert.DeserializeObject<CheckDto>(str[1]);
+                var Creditor = JsonConvert.DeserializeObject<string>(str[2]);
+                WorkService.EndCheckCredit(products, check, Creditor);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult GetSalesByDate([FromBody] string str)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                var date = JsonConvert.DeserializeObject<DateTime>(str);
+                return Ok(WorkService.SalesByDate(date));
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult DeleteProductById()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety") && headers.Contains("ID"))
+            {
+
+                string ID = headers.GetValues("ID").First();
+                WorkService.DeleteProductById(int.Parse(ID));
+                return Ok();
 
             }
             else

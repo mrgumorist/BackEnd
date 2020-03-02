@@ -169,6 +169,7 @@
     <Compile Include="Controllers\ApiiController.cs" />
     <Compile Include="DB\MyDbContext.cs" />
     <Compile Include="Entities\Check.cs" />
+    <Compile Include="Entities\Credit.cs" />
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Entities\Login.cs" />
     <Compile Include="Entities\Product.cs" />
@@ -227,8 +228,21 @@
     <Compile Include="Migrations\202002171931353_checkfe.designer.cs">
       <DependentUpon>202002171931353_checkfe.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002260708381_ffffff.cs" />
+    <Compile Include="Migrations\202002260708381_ffffff.designer.cs">
+      <DependentUpon>202002260708381_ffffff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002262042226_fffffff.cs" />
+    <Compile Include="Migrations\202002262042226_fffffff.designer.cs">
+      <DependentUpon>202002262042226_fffffff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002281131392_ffffffff.cs" />
+    <Compile Include="Migrations\202002281131392_ffffffff.designer.cs">
+      <DependentUpon>202002281131392_ffffffff.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsDto\CheckDto.cs" />
+    <Compile Include="ModelsDto\CreditorDto.cs" />
     <Compile Include="ModelsDto\ProductDto.cs" />
     <Compile Include="ModelsDto\ProductInCheckDto.cs" />
     <Compile Include="ModelsDto\UserDto.cs" />
@@ -358,6 +372,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002171931353_checkfe.resx">
       <DependentUpon>202002171931353_checkfe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002260708381_ffffff.resx">
+      <DependentUpon>202002260708381_ffffff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002262042226_fffffff.resx">
+      <DependentUpon>202002262042226_fffffff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002281131392_ffffffff.resx">
+      <DependentUpon>202002281131392_ffffffff.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

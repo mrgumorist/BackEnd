@@ -46,6 +46,11 @@ namespace BackEnd.Services
             apiContext.Users.Remove(apiContext.Users.First(x => x.ID == ID));
             apiContext.SaveChanges();
         }
+        public static void DeleteProductById(int ID)
+        {
+            apiContext.ProductsAvaliale.Remove(apiContext.ProductsAvaliale.First(x => x.ID == ID));
+            apiContext.SaveChanges();
+        }
         public static void AddUser(UserDto user)
         {
             int id = int.Parse(user.UsersType);
@@ -91,7 +96,8 @@ namespace BackEnd.Services
         }
         public static List<ProductDto> GetProducts()
         {
-            var list = apiContext.ProductsAvaliale.ToList();
+            DeleteProductsWithMinus();
+               var list = apiContext.ProductsAvaliale.ToList();
             List<ProductDto> results = new List<ProductDto>();
             foreach (var item in list)
             {
@@ -111,7 +117,7 @@ namespace BackEnd.Services
         }
         public static bool IsExists(string specialcode)
         {
-            List<Product> results =  apiContext.ProductsAvaliale.Where(x => x.SpecialCode == specialcode).ToList();
+            List<Product> results =  apiContext.ProductsAvaliale.Where(x => x.SpecialCode.Equals(specialcode)).ToList();
             if(results.Count==0)
             {
                 return false;
@@ -122,6 +128,14 @@ namespace BackEnd.Services
         {
             Product product1 = new Product() { Name = product.Name, Count = product.Count, Description = product.Description, IsNumurable = product.IsNumurable, Massa = product.Massa, SpecialCode = product.SpecialCode, Price=product.Price};
             apiContext.ProductsAvaliale.Add(product1);
+            //Transaction transaction = new Transaction();
+            //transaction.transactionType = apiContext.TransactionTypes.First(x => x.Name == "AddedToStorage");
+            //transaction.date = DateTime.Now;
+            //ProductReport productReport = new ProductReport() { Name = product.Name, Count = product.Count, Description = product.Description, IsNumurable = product.IsNumurable, Massa = product.Massa, SpecialCode = product.SpecialCode, Price = product.Price };
+            //apiContext.Reports.Add(productReport);
+            //apiContext.SaveChanges();
+            //transaction.Reports.Add(productReport);
+            //apiContext.Transactions.Add(transaction);
             apiContext.SaveChanges();
         }
         public static void ChangeProduct(ProductDto product)
@@ -201,6 +215,119 @@ namespace BackEnd.Services
         {
             return apiContext.ProductsAvaliale.First(x => x.ID == ID).Count;
         }
-        
+        public  static void EndCheck(List<ProductInCheckDto> products, CheckDto check)
+        {
+            //DeleteEmptyChecks();
+            apiContext.Checks.First(x => x.ID == check.ID).SumPrice = check.SumPrice;
+            apiContext.Checks.First(x => x.ID == check.ID).DateCloseOfCheck = check.DateCloseOfCheck.Value;
+            apiContext.Checks.First(x => x.ID == check.ID).TypeOfPay = check.TypeOfPay;
+            apiContext.SaveChanges();
+            foreach (var item in products)
+            {
+                ProductInCheck productInCheck = new ProductInCheck();
+                productInCheck.Count = item.Count;
+                productInCheck.Description = item.Description;
+                productInCheck.IDOfProduct = item.IDOfProduct;
+                productInCheck.IsNumurable = item.IsNumurable;
+                productInCheck.Massa = item.Massa;
+                productInCheck.Name = item.Name;
+                productInCheck.Price = item.Price.Value;
+                productInCheck.SpecialCode = item.SpecialCode;
+                productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
+                apiContext.ProductsInCheck.Add(productInCheck);
+                if (productInCheck.IsNumurable == true)
+                {
+                    apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Count -= productInCheck.Count;
+                }
+                else
+                {
+                    apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Massa -= productInCheck.Massa;
+                }
+            }
+            apiContext.SaveChanges();
+            
+            
+        }
+        public static void EndCheckCredit(List<ProductInCheckDto> products, CheckDto check, string str)
+        {
+            apiContext.Checks.First(x => x.ID == check.ID).SumPrice = check.SumPrice;
+            apiContext.Checks.First(x => x.ID == check.ID).DateCloseOfCheck = check.DateCloseOfCheck.Value;
+            apiContext.Checks.First(x => x.ID == check.ID).TypeOfPay = check.TypeOfPay;
+            apiContext.SaveChanges();
+            foreach (var item in products)
+            {
+                ProductInCheck productInCheck = new ProductInCheck();
+                productInCheck.Count = item.Count;
+                productInCheck.Description = item.Description;
+                productInCheck.IDOfProduct = item.IDOfProduct;
+                productInCheck.IsNumurable = item.IsNumurable;
+                productInCheck.Massa = item.Massa;
+                productInCheck.Name = item.Name;
+                productInCheck.Price = item.Price.Value;
+                productInCheck.SpecialCode = item.SpecialCode;
+                productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
+                apiContext.ProductsInCheck.Add(productInCheck);
+                if (productInCheck.IsNumurable == true)
+                {
+                    apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Count -= productInCheck.Count;
+                }
+                else
+                {
+                    apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Massa -= productInCheck.Massa;
+                }
+            }
+            apiContext.SaveChanges();
+            Credit credit = new Credit();
+            credit.dateOfGetCredit = DateTime.Now;
+            credit.Initsials = str;
+            credit.Sum = check.SumPrice.Value;
+            apiContext.Creditors.Add(credit);
+            apiContext.SaveChanges();
+        }
+        public static double SalesByDate(DateTime date)
+        {
+            //DeleteEmptyChecks();
+            double sum = 0;
+            //TODO REPORT
+            //List<Check> checks = apiContext.Checks.Where(x => x.Products.Count != 0).ToList();
+            //foreach (var item in checks)
+            //{
+            //    if (date.Day == item.DateCloseOfCheck.Day && date.Month == item.DateCloseOfCheck.Month && date.Year == item.DateCloseOfCheck.Year)
+            //    {
+            //        sum += item.SumPrice.Value;
+            //    }
+            //}
+            return sum;
+        }
+        public static void DeleteProductsWithMinus()
+        {
+            foreach (var item in apiContext.ProductsAvaliale)
+            {
+                if(item.Count<0)
+                {
+                    item.Count = 0;
+                }
+            }
+            apiContext.SaveChanges();
+        }
+        public static void DeleteEmptyChecks()
+        {
+            List<Check> forDelete = new List<Check>();
+            foreach (var item in apiContext.Checks)
+            {
+                if (item.DateCreatingOfCheck.Date==DateTime.Now.Date)
+                {
+                    if(item.Products.Count==0)
+                    {
+                        forDelete.Add(item);
+                    }
+                }
+            }
+            foreach (var item in forDelete)
+            {
+                apiContext.Checks.Remove(item);
+            }
+            apiContext.SaveChanges();
+        }
     }
 }
