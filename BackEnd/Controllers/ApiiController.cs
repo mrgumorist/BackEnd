@@ -445,15 +445,15 @@ namespace BackEnd.Controllers
             }
         }
         [HttpPost]
-        public IHttpActionResult GetSalesByDate([FromBody] string str)
+        public IHttpActionResult GetSalesByDate([FromBody] DateTime f)
         {
             var re = Request;
             var headers = re.Headers;
 
             if (headers.Contains("Safety"))
             {
-                var date = JsonConvert.DeserializeObject<DateTime>(str);
-                return Ok(WorkService.SalesByDate(date));
+                //var date = JsonConvert.DeserializeObject<DateTime>(str);
+                return Ok(WorkService.SalesByDate(f));
 
             }
             else
