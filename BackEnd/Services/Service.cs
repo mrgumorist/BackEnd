@@ -284,20 +284,19 @@ namespace BackEnd.Services
             apiContext.Creditors.Add(credit);
             apiContext.SaveChanges();
         }
-        public static double SalesByDate(DateTime date)
+        public static List<CheckDto> SalesByDate(DateTime date)
         {
-            //DeleteEmptyChecks();
-            double sum = 0;
-            //TODO REPORT
-            //List<Check> checks = apiContext.Checks.Where(x => x.Products.Count != 0).ToList();
-            //foreach (var item in checks)
-            //{
-            //    if (date.Day == item.DateCloseOfCheck.Day && date.Month == item.DateCloseOfCheck.Month && date.Year == item.DateCloseOfCheck.Year)
-            //    {
-            //        sum += item.SumPrice.Value;
-            //    }
-            //}
-            return sum;
+            List<CheckDto> checksDtos = new List<CheckDto>();
+            List<Check> checks = apiContext.Checks.Where(x => x.Products.Count != 0).ToList();
+            foreach (var item in checks)
+            {
+                if (date.Day == item.DateCloseOfCheck.Day && date.Month == item.DateCloseOfCheck.Month && date.Year == item.DateCloseOfCheck.Year)
+                {
+                    CheckDto check = new CheckDto() { DateCloseOfCheck=item.DateCloseOfCheck, DateCreatingOfCheck = item.DateCreatingOfCheck, ID=item.ID, SumPrice = item.SumPrice, TypeOfPay=item.TypeOfPay};
+                    checksDtos.Add(check);
+                }
+            }
+            return checksDtos;
         }
         public static void DeleteProductsWithMinus()
         {
