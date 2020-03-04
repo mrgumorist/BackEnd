@@ -242,7 +242,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsDto\CheckDto.cs" />
-    <Compile Include="ModelsDto\CreditorDto.cs" />
+    <Compile Include="ModelsDto\CreditDto.cs" />
     <Compile Include="ModelsDto\DateDto.cs" />
     <Compile Include="ModelsDto\DatesDto.cs" />
     <Compile Include="ModelsDto\ProductDto.cs" />

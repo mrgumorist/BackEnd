@@ -342,6 +342,17 @@ namespace BackEnd.Services
             }
             return checksDtos;
         }
-            
+        public static List<CreditDto> AllCredits()
+        {
+            List<CreditDto> creditDtos = new List<CreditDto>();
+            List<Credit> credits = apiContext.Creditors.ToList();
+            foreach (var item in credits)
+            {
+              
+                    CreditDto check = new CreditDto() { ID = item.ID, dateOfGetCredit=item.dateOfGetCredit, Initsials=item.Initsials, Sum=item.Sum};
+                    creditDtos.Add(check);
+            }
+            return creditDtos;
+        }
     }
 }
