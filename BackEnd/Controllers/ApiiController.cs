@@ -459,6 +459,22 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
+        [HttpPost]
+        public IHttpActionResult GetSalesByDates([FromBody] DatesDto dto)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                return Ok(WorkService.SalesByDates(dto.date1, dto.date2));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        
         [HttpGet]
         public IHttpActionResult DeleteProductById()
         {

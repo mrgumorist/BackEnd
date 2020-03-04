@@ -328,5 +328,20 @@ namespace BackEnd.Services
             }
             apiContext.SaveChanges();
         }
+        public static List<CheckDto> SalesByDates(DateTime date1, DateTime date2)
+        {
+            List<CheckDto> checksDtos = new List<CheckDto>();
+            List<Check> checks = apiContext.Checks.Where(x => x.Products.Count != 0).ToList();
+            foreach (var item in checks)
+            {
+                if (item.DateCreatingOfCheck >= date1 && item.DateCreatingOfCheck <= date2)
+                {
+                    CheckDto check = new CheckDto() { DateCloseOfCheck = item.DateCloseOfCheck, DateCreatingOfCheck = item.DateCreatingOfCheck, ID = item.ID, SumPrice = item.SumPrice, TypeOfPay = item.TypeOfPay };
+                    checksDtos.Add(check);
+                }
+            }
+            return checksDtos;
+        }
+            
     }
 }
