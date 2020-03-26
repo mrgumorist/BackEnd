@@ -224,7 +224,9 @@ namespace BackEnd.Services
             apiContext.SaveChanges();
             foreach (var item in products)
             {
-                ProductInCheck productInCheck = new ProductInCheck();
+                if (item.IDOfProduct != 0)
+                {
+                    ProductInCheck productInCheck = new ProductInCheck();
                 productInCheck.Count = item.Count;
                 productInCheck.Description = item.Description;
                 productInCheck.IDOfProduct = item.IDOfProduct;
@@ -242,6 +244,22 @@ namespace BackEnd.Services
                 else
                 {
                     apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Massa -= productInCheck.Massa;
+                    }
+                }
+                else
+                {
+
+                    ProductInCheck productInCheck = new ProductInCheck();
+                    productInCheck.Count = item.Count;
+                    productInCheck.Description = item.Description;
+             //       productInCheck.IDOfProduct = item.IDOfProduct;
+                    productInCheck.IsNumurable = item.IsNumurable;
+                    productInCheck.Massa = item.Massa;
+                    productInCheck.Name = item.Name;
+                    productInCheck.Price = item.Price.Value;
+                    productInCheck.SpecialCode = item.SpecialCode;
+                    productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
+                    apiContext.ProductsInCheck.Add(productInCheck);
                 }
             }
             apiContext.SaveChanges();
@@ -256,24 +274,42 @@ namespace BackEnd.Services
             apiContext.SaveChanges();
             foreach (var item in products)
             {
-                ProductInCheck productInCheck = new ProductInCheck();
-                productInCheck.Count = item.Count;
-                productInCheck.Description = item.Description;
-                productInCheck.IDOfProduct = item.IDOfProduct;
-                productInCheck.IsNumurable = item.IsNumurable;
-                productInCheck.Massa = item.Massa;
-                productInCheck.Name = item.Name;
-                productInCheck.Price = item.Price.Value;
-                productInCheck.SpecialCode = item.SpecialCode;
-                productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
-                apiContext.ProductsInCheck.Add(productInCheck);
-                if (productInCheck.IsNumurable == true)
+                if (item.IDOfProduct != 0)
                 {
-                    apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Count -= productInCheck.Count;
+                    ProductInCheck productInCheck = new ProductInCheck();
+                    productInCheck.Count = item.Count;
+                    productInCheck.Description = item.Description;
+                    productInCheck.IDOfProduct = item.IDOfProduct;
+                    productInCheck.IsNumurable = item.IsNumurable;
+                    productInCheck.Massa = item.Massa;
+                    productInCheck.Name = item.Name;
+                    productInCheck.Price = item.Price.Value;
+                    productInCheck.SpecialCode = item.SpecialCode;
+                    productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
+                    apiContext.ProductsInCheck.Add(productInCheck);
+                    if (productInCheck.IsNumurable == true)
+                    {
+                        apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Count -= productInCheck.Count;
+                    }
+                    else
+                    {
+                        apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Massa -= productInCheck.Massa;
+                    }
                 }
                 else
                 {
-                    apiContext.ProductsAvaliale.First(x => x.ID == productInCheck.IDOfProduct).Massa -= productInCheck.Massa;
+
+                    ProductInCheck productInCheck = new ProductInCheck();
+                    productInCheck.Count = item.Count;
+                    productInCheck.Description = item.Description;
+                    //       productInCheck.IDOfProduct = item.IDOfProduct;
+                    productInCheck.IsNumurable = item.IsNumurable;
+                    productInCheck.Massa = item.Massa;
+                    productInCheck.Name = item.Name;
+                    productInCheck.Price = item.Price.Value;
+                    productInCheck.SpecialCode = item.SpecialCode;
+                    productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
+                    apiContext.ProductsInCheck.Add(productInCheck);
                 }
             }
             apiContext.SaveChanges();
@@ -353,6 +389,17 @@ namespace BackEnd.Services
                     creditDtos.Add(check);
             }
             return creditDtos;
+        }
+        public static InAndOutsDto AllInAndOuts()
+        {
+            InAndOutsDto outsDto = new InAndOutsDto();
+            outsDto.LenaS = apiContext.LenaS.ToList();
+            outsDto.LesiaS = apiContext.LesiaS.ToList();
+            outsDto.Prihods = apiContext.Prihods.ToList();
+            outsDto.Rozhods = apiContext.Rozhods.ToList();
+            outsDto.Spisannya = apiContext.Spisannya.ToList();
+            outsDto.SpisannyaOnAnotherMarket = apiContext.SpisannyaOnAnotherMarket.ToList();
+            return outsDto;
         }
     }
 }

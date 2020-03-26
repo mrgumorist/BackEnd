@@ -511,5 +511,22 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet]
+        public IHttpActionResult GetAllInAndOuts()
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+
+                return Ok(WorkService.AllInAndOuts());
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

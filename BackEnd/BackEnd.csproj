@@ -168,13 +168,19 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ApiiController.cs" />
     <Compile Include="DB\MyDbContext.cs" />
+    <Compile Include="Entities\CalcIn.cs" />
+    <Compile Include="Entities\CalcOut.cs" />
     <Compile Include="Entities\Check.cs" />
     <Compile Include="Entities\Credit.cs" />
+    <Compile Include="Entities\Lena.cs" />
+    <Compile Include="Entities\Lesia.cs" />
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Entities\Login.cs" />
     <Compile Include="Entities\Product.cs" />
     <Compile Include="Entities\ProductInCheck.cs" />
     <Compile Include="Entities\ProductReport.cs" />
+    <Compile Include="Entities\Spisannya.cs" />
+    <Compile Include="Entities\SpisannyaOnAnotherMarket.cs" />
     <Compile Include="Entities\Transaction.cs" />
     <Compile Include="Entities\TransactionType.cs" />
     <Compile Include="Global.asax.cs">
@@ -240,11 +246,16 @@
     <Compile Include="Migrations\202002281131392_ffffffff.designer.cs">
       <DependentUpon>202002281131392_ffffffff.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003251556062_addedspisanya.cs" />
+    <Compile Include="Migrations\202003251556062_addedspisanya.designer.cs">
+      <DependentUpon>202003251556062_addedspisanya.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsDto\CheckDto.cs" />
     <Compile Include="ModelsDto\CreditDto.cs" />
     <Compile Include="ModelsDto\DateDto.cs" />
     <Compile Include="ModelsDto\DatesDto.cs" />
+    <Compile Include="ModelsDto\InAndOuts.cs" />
     <Compile Include="ModelsDto\ProductDto.cs" />
     <Compile Include="ModelsDto\ProductInCheckDto.cs" />
     <Compile Include="ModelsDto\UserDto.cs" />
@@ -384,6 +395,12 @@
     <EmbeddedResource Include="Migrations\202002281131392_ffffffff.resx">
       <DependentUpon>202002281131392_ffffffff.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003251556062_addedspisanya.resx">
+      <DependentUpon>202003251556062_addedspisanya.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

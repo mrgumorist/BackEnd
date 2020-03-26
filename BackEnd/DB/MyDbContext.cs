@@ -26,7 +26,12 @@ namespace BackEnd.DB
         public DbSet<Check> Checks { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Credit> Creditors { get; set; }
-        
+        public DbSet<CalcIn> Prihods { get; set; }
+        public DbSet<CalcOut> Rozhods { get; set; }
+        public DbSet<Spisannya> Spisannya { get; set; }
+        public DbSet<SpisannyaOnAnotherMarket> SpisannyaOnAnotherMarket { get; set; }
+        public DbSet<Lesia> LesiaS { get; set; }
+        public DbSet<Lena> LenaS { get; set; }
     }
     
     
