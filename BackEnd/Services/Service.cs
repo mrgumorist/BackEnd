@@ -403,6 +403,18 @@ namespace BackEnd.Services
             outsDto.SpisannyaOnAnotherMarket = apiContext.SpisannyaOnAnotherMarket.ToList();
             return outsDto;
         }
+        public static void UpdateCredit(CreditDto credit)
+        {
+            if(credit.Sum==0)
+            {
+                apiContext.Creditors.Remove(apiContext.Creditors.First(x => x.ID == credit.ID));
+            }
+            else
+            {
+                apiContext.Creditors.First(x => x.ID == credit.ID).Sum = credit.Sum;
+            }
+            apiContext.SaveChanges();
+        }
         public static void UpdateInAndOuts(InAndOutsDto dto)
         {
             foreach (var entity in dto.LenaS)

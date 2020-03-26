@@ -544,5 +544,22 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
+        [HttpPost]
+        public IHttpActionResult UpdateCredit([FromBody] CreditDto dto)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                WorkService.UpdateCredit(dto);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        
     }
 }
