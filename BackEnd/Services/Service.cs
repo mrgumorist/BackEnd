@@ -3,11 +3,13 @@ using BackEnd.Entities;
 using BackEnd.ModelsDto;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-
+using System.Data.Entity.Migrations;
 namespace BackEnd.Services
 {
     public static class WorkService
@@ -400,6 +402,163 @@ namespace BackEnd.Services
             outsDto.Spisannya = apiContext.Spisannya.ToList();
             outsDto.SpisannyaOnAnotherMarket = apiContext.SpisannyaOnAnotherMarket.ToList();
             return outsDto;
+        }
+        public static void UpdateInAndOuts(InAndOutsDto dto)
+        {
+            foreach (var entity in dto.LenaS)
+            {
+                using (var dbContextTransaction = apiContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dbEntity = apiContext.Set<Lena>()
+                                       .SingleOrDefault(x => x.ID == entity.ID);
+
+                        apiContext.Set<Lena>().AddOrUpdate(entity);
+                        apiContext.Entry(entity).State =
+                             dbEntity != null
+                             ? EntityState.Modified
+                             : EntityState.Added;
+
+                        apiContext.SaveChanges();
+                        dbContextTransaction?.Commit();
+                    }
+                    catch (DbEntityValidationException ex) { }
+                    catch (Exception ex) { /* ... */ }
+                }
+            }
+            foreach (var entity in dto.LenaS)
+            {
+                using (var dbContextTransaction = apiContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dbEntity = apiContext.Set<Lena>()
+                                       .SingleOrDefault(x => x.ID == entity.ID);
+
+                        apiContext.Set<Lena>().AddOrUpdate(entity);
+                        apiContext.Entry(entity).State =
+                             dbEntity != null
+                             ? EntityState.Modified
+                             : EntityState.Added;
+
+                        apiContext.SaveChanges();
+                        dbContextTransaction?.Commit();
+                    }
+                    catch (DbEntityValidationException ex) { }
+                    catch (Exception ex) { /* ... */ }
+                }
+            }
+            foreach (var entity in dto.LesiaS)
+            {
+                using (var dbContextTransaction = apiContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dbEntity = apiContext.Set<Lesia>()
+                                       .SingleOrDefault(x => x.ID == entity.ID);
+
+                        apiContext.Set<Lesia>().AddOrUpdate(entity);
+                        apiContext.Entry(entity).State =
+                             dbEntity != null
+                             ? EntityState.Modified
+                             : EntityState.Added;
+
+                        apiContext.SaveChanges();
+                        dbContextTransaction?.Commit();
+                    }
+                    catch (DbEntityValidationException ex) { }
+                    catch (Exception ex) { /* ... */ }
+                }
+            }
+            foreach (var entity in dto.Prihods)
+            {
+                using (var dbContextTransaction = apiContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dbEntity = apiContext.Set<CalcIn>()
+                                       .SingleOrDefault(x => x.ID == entity.ID);
+
+                        apiContext.Set<CalcIn>().AddOrUpdate(entity);
+                        apiContext.Entry(entity).State =
+                             dbEntity != null
+                             ? EntityState.Modified
+                             : EntityState.Added;
+
+                        apiContext.SaveChanges();
+                        dbContextTransaction?.Commit();
+                    }
+                    catch (DbEntityValidationException ex) { }
+                    catch (Exception ex) { /* ... */ }
+                }
+            }
+            foreach (var entity in dto.Rozhods)
+            {
+                using (var dbContextTransaction = apiContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dbEntity = apiContext.Set<CalcOut>()
+                                       .SingleOrDefault(x => x.ID == entity.ID);
+
+                        apiContext.Set<CalcOut>().AddOrUpdate(entity);
+                        apiContext.Entry(entity).State =
+                             dbEntity != null
+                             ? EntityState.Modified
+                             : EntityState.Added;
+
+                        apiContext.SaveChanges();
+                        dbContextTransaction?.Commit();
+                    }
+                    catch (DbEntityValidationException ex) { }
+                    catch (Exception ex) { /* ... */ }
+                }
+            }
+            foreach (var entity in dto.Spisannya)
+            {
+                using (var dbContextTransaction = apiContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dbEntity = apiContext.Set<Spisannya>()
+                                       .SingleOrDefault(x => x.ID == entity.ID);
+
+                        apiContext.Set<Spisannya>().AddOrUpdate(entity);
+                        apiContext.Entry(entity).State =
+                             dbEntity != null
+                             ? EntityState.Modified
+                             : EntityState.Added;
+
+                        apiContext.SaveChanges();
+                        dbContextTransaction?.Commit();
+                    }
+                    catch (DbEntityValidationException ex) { }
+                    catch (Exception ex) { /* ... */ }
+                }
+            }
+            foreach (var entity in dto.SpisannyaOnAnotherMarket)
+            {
+                using (var dbContextTransaction = apiContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var dbEntity = apiContext.Set<SpisannyaOnAnotherMarket>()
+                                       .SingleOrDefault(x => x.ID == entity.ID);
+
+                        apiContext.Set<SpisannyaOnAnotherMarket>().AddOrUpdate(entity);
+                        apiContext.Entry(entity).State =
+                             dbEntity != null
+                             ? EntityState.Modified
+                             : EntityState.Added;
+
+                        apiContext.SaveChanges();
+                        dbContextTransaction?.Commit();
+                    }
+                    catch (DbEntityValidationException ex) { }
+                    catch (Exception ex) { /* ... */ }
+                }
+            }
         }
     }
 }

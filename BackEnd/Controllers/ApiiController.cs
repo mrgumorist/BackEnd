@@ -528,5 +528,21 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
+        [HttpPost]
+        public IHttpActionResult UpdateInAndOuts([FromBody] InAndOutsDto dto)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Safety"))
+            {
+                WorkService.UpdateInAndOuts(dto);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }
