@@ -10,11 +10,232 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Data.Entity.Migrations;
+using System.IO;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json;
+
 namespace BackEnd.Services
 {
+    public class IO2
+    {
+        public double sum { get; set; }
+    }
+
+    public class iO
+    {
+        public IO2 IO { get; set; }
+    }
+
+    public class RootIO
+    {
+        public List<iO> IO { get; set; }
+    }
+    public class GetSumObject
+    {
+        public int no { get; set; }
+        public double sum { get; set; }
+    }
+    public class S
+    {
+        public long code { get; set; }
+        public double price { get; set; }
+        public string name { get; set; }
+        public double qty { get; set; }
+    }
+
+    public class F
+    {
+        public S S { get; set; }
+    }
+
+    public class Root
+    {
+        public List<F> F { get; set; }
+    }
     public static class WorkService
     {
+        public static string FiscalUrl { get; set; } = " ";
+        public static bool isConnectedFiscal { get; set; } = true;
         static ApiContext apiContext = new ApiContext();
+        public static void LoadFiscal()
+        {
+            try
+            {
+                var value= apiContext.StaticValuebles.FirstOrDefault(x => x.Name == "Url");
+                if (value != null)
+                    FiscalUrl = value.Value;
+            }
+            catch
+            {
+
+            }
+        }
+
+        public static double Sum(double sum)
+        {
+            b:
+            List<Product> products = new List<Product>();
+            double sumf = 0;
+            double neededsum = sum;
+            while (neededsum > sumf)
+            {
+                try
+                {
+                    Random random = new Random();
+                    int rndvalue = random.Next(apiContext.ProductsAvaliale.Count());
+                    sumf += apiContext.ProductsAvaliale.ToArray()[rndvalue].Price;
+                    products.Add(apiContext.ProductsAvaliale.ToArray()[rndvalue]);
+                }
+                catch
+                {
+
+                }
+            }
+            if(sumf>neededsum+100)
+            {
+                goto b;
+            }
+            while (products.Count != 0)
+            {
+                try
+                {
+                    List<FiscalProductDto> fiscalProducts = new List<FiscalProductDto>();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        try
+                        {
+                            var product = products.Last();
+                            products.Remove(product);
+                            FiscalProductDto fiscalProduct = new FiscalProductDto();
+                            fiscalProduct.COUNT = 1;
+                            fiscalProduct.NAME = product.Name;
+                            fiscalProduct.PRICE = product.Price;
+                            fiscalProduct.SPECIALCODE = long.Parse(product.SpecialCode);
+                            fiscalProducts.Add(fiscalProduct);
+                        }
+                        catch
+                        {
+
+                        }
+
+                    }
+                    try
+                    {
+                        PrintFiscal(fiscalProducts);
+                    }
+                    catch
+                    {
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+            }
+            return sumf;
+        }
+
+        public static void SaveFiscal()
+        {
+            try
+            {
+                var value = apiContext.StaticValuebles.FirstOrDefault(x => x.Name == "Url");
+                if (value != null)
+                {
+                    apiContext.StaticValuebles.FirstOrDefault(x => x.Name == "Url").Value = FiscalUrl;
+                }
+                else
+                {
+                    apiContext.StaticValuebles.Add(new StaticValueble() { Name = "Url", Value = FiscalUrl });
+                }
+                apiContext.SaveChanges();
+            }
+            catch
+            {
+
+            }
+        }
+        public static bool Obnule()
+        {
+            bool result = false;
+            double sum = getSuminSafe() *-1;
+            RootIO root = new RootIO();
+            iO iO = new iO();
+            iO.IO = new IO2() { sum = sum };
+            List<iO> list = new List<iO>();
+            list.Add(iO);
+            root.IO = list;
+            string json = JsonConvert.SerializeObject(root);
+            Uri uri = new Uri(FiscalUrl+"/cgi/chk");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "POST";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+
+            System.Net.ServicePointManager.Expect100Continue = false;
+            request.ContentType = "application/json";
+            // request.Method = "POST";
+            // request.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
+            request.Credentials = credentialCache;
+
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+               // string json = File.ReadAllText("json.txt");
+                streamWriter.Write(json);
+            }
+
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                if (!(responseString.Contains("err"))){
+                    result = true;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+            return result;
+        }
+        public static double getSuminSafe()
+        {
+            Uri uri = new Uri(FiscalUrl+"/cgi/rep/pay");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "GET";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+            System.Net.ServicePointManager.Expect100Continue = false;
+            List<GetSumObject> objects = null ;
+
+            request.Credentials = credentialCache;
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                objects = JsonConvert.DeserializeObject<List<GetSumObject>>(responseString);
+            }
+            double sum = 0;
+            foreach (GetSumObject item in objects)
+            {
+                sum += item.sum;
+            }
+           
+            return sum;
+        }
         public static int Login(string login, string password)
         {
             try
@@ -99,7 +320,7 @@ namespace BackEnd.Services
         public static List<ProductDto> GetProducts()
         {
             DeleteProductsWithMinus();
-               var list = apiContext.ProductsAvaliale.ToList();
+               var list = apiContext.ProductsAvaliale.AsEnumerable().ToList();
             List<ProductDto> results = new List<ProductDto>();
             foreach (var item in list)
             {
@@ -119,7 +340,7 @@ namespace BackEnd.Services
         }
         public static bool IsExists(string specialcode)
         {
-            List<Product> results =  apiContext.ProductsAvaliale.Where(x => x.SpecialCode.Equals(specialcode)).ToList();
+            List<Product> results =  apiContext.ProductsAvaliale.AsEnumerable().Where(x => x.SpecialCode.Equals(specialcode)).ToList();
             if(results.Count==0)
             {
                 return false;
@@ -217,13 +438,14 @@ namespace BackEnd.Services
         {
             return apiContext.ProductsAvaliale.First(x => x.ID == ID).Count;
         }
-        public  static void EndCheck(List<ProductInCheckDto> products, CheckDto check)
+        public  static void EndCheck(List<ProductInCheckDto> products, CheckDto check, string IsWithAdress)
         {
             //DeleteEmptyChecks();
             apiContext.Checks.First(x => x.ID == check.ID).SumPrice = check.SumPrice;
             apiContext.Checks.First(x => x.ID == check.ID).DateCloseOfCheck = check.DateCloseOfCheck.Value;
             apiContext.Checks.First(x => x.ID == check.ID).TypeOfPay = check.TypeOfPay;
             apiContext.SaveChanges();
+            
             foreach (var item in products)
             {
                 if (item.IDOfProduct != 0)
@@ -265,10 +487,93 @@ namespace BackEnd.Services
                 }
             }
             apiContext.SaveChanges();
-            
-            
+            if (WorkService.isConnectedFiscal == true)
+            {
+                if (IsWithAdress == "Так")
+                {
+                    List<FiscalProductDto> fiscalProductDtos = new List<FiscalProductDto>();
+                    foreach (var item in products)
+                    {
+                        if (item.IDOfProduct != 0)
+                        {
+                            try
+                            {
+                                long number = long.Parse(item.SpecialCode);
+                                string name = item.Name;
+                                double price = item.Price.Value;
+                                double count = 0;
+                                if (item.IsNumurable == true)
+                                {
+                                    count = item.Count.Value;
+                                }
+                                else
+                                {
+                                    count = item.Massa.Value;
+                                }
+                                FiscalProductDto fiscal = new FiscalProductDto();
+                                fiscal.COUNT = count;
+                                fiscal.NAME = name;
+                                fiscal.PRICE = price;
+                                fiscal.SPECIALCODE = number;
+                                fiscalProductDtos.Add(fiscal);
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                    }
+                    PrintFiscal(fiscalProductDtos);
+                }
+            }
+
+
         }
-        public static void EndCheckCredit(List<ProductInCheckDto> products, CheckDto check, string str)
+        public static void PrintFiscal(List<FiscalProductDto> list)
+        {
+            Root root = new Root();
+            List <F> flist=new List<F>();
+            foreach(var item in list)
+            {
+                S s = new S();
+                s.code = item.SPECIALCODE;
+                s.price = item.PRICE;
+                s.qty = item.COUNT;
+                s.name = item.NAME;
+                F f = new F();
+                f.S = s;
+                flist.Add(f);
+            }
+            root.F = flist;
+            Uri uri = new Uri(FiscalUrl+"/cgi/chk");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "POST";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+            System.Net.ServicePointManager.Expect100Continue = false;
+            request.ContentType = "application/json";
+            // request.Method = "POST";
+            // request.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
+            request.Credentials = credentialCache;
+
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                streamWriter.Write(JsonConvert.SerializeObject(root));
+            }
+
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                Console.WriteLine(responseString);
+            }
+        }
+        public static void EndCheckCredit(List<ProductInCheckDto> products, CheckDto check, string str, string IsWithAdress)
         {
             apiContext.Checks.First(x => x.ID == check.ID).SumPrice = check.SumPrice;
             apiContext.Checks.First(x => x.ID == check.ID).DateCloseOfCheck = check.DateCloseOfCheck.Value;
@@ -321,6 +626,45 @@ namespace BackEnd.Services
             credit.Sum = check.SumPrice.Value;
             apiContext.Creditors.Add(credit);
             apiContext.SaveChanges();
+            if (WorkService.isConnectedFiscal == true)
+            {
+                if (IsWithAdress == "Так")
+                {
+                    List<FiscalProductDto> fiscalProductDtos = new List<FiscalProductDto>();
+                    foreach (var item in products)
+                    {
+                        if (item.IDOfProduct != 0)
+                        {
+                            try
+                            {
+                                int number = int.Parse(item.SpecialCode);
+                                string name = item.Name;
+                                double price = item.Price.Value;
+                                double count = 0;
+                                if (item.IsNumurable == true)
+                                {
+                                    count = item.Count.Value;
+                                }
+                                else
+                                {
+                                    count = item.Massa.Value;
+                                }
+                                FiscalProductDto fiscal = new FiscalProductDto();
+                                fiscal.COUNT = count;
+                                fiscal.NAME = name;
+                                fiscal.PRICE = price;
+                                fiscal.SPECIALCODE = number;
+                                fiscalProductDtos.Add(fiscal);
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                    }
+                    PrintFiscal(fiscalProductDtos);
+                }
+            }
         }
         public static List<CheckDto> SalesByDate(DateTime date)
         {

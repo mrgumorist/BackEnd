@@ -3,9 +3,11 @@ using BackEnd.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -14,11 +16,242 @@ namespace BackEnd.Controllers
     public class ApiiController : ApiController
     {
         // GET api/values
+
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
+        [HttpGet]
+        public IHttpActionResult IsConnectedFiscal()
+        {
+            return Ok(WorkService.isConnectedFiscal);
+        }
+        [HttpGet]
+        public IHttpActionResult SetFiscalConnected()
+        {
+            WorkService.isConnectedFiscal = true;
+            return Ok(WorkService.isConnectedFiscal);
+        }
 
+        [HttpPost]
+        public IHttpActionResult PostSum([FromBody]NeededSumDto Sum)
+        {
+            if (Sum.Sum > 0)
+            {
+                return Ok(WorkService.Sum(Sum.Sum));
+            }
+            else return BadRequest();
+        }
+        [HttpGet]
+        public IHttpActionResult NullAbleCheck()
+        {
+            Uri uri = new Uri(WorkService.FiscalUrl + "/cgi/chk");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "POST";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+            System.Net.ServicePointManager.Expect100Continue = false;
+            request.ContentType = "application/json";
+            // request.Method = "POST";
+            // request.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
+            request.Credentials = credentialCache;
+
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                streamWriter.Write("{0}");
+            }
+
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                Console.WriteLine(responseString);
+                return Ok(responseString);
+            }
+          
+        }
+        [HttpGet]
+        public IHttpActionResult SetFiscalDisconnected()
+        {
+            WorkService.isConnectedFiscal = false;
+            return Ok(WorkService.isConnectedFiscal); 
+        }
+
+        [HttpPost]
+        public IHttpActionResult PostFiscalUrl([FromBody] FiscalDto dto)
+        {
+            WorkService.FiscalUrl = dto.Url;
+            //AppDomain.CurrentDomain.SetData("Url", WorkService.FiscalUrl);
+            WorkService.SaveFiscal();
+            return Ok(WorkService.FiscalUrl);
+           
+        }
+        [HttpGet]
+        public IHttpActionResult GetFiscalDto()
+        {
+            FiscalDto dto = new FiscalDto();
+            dto.Url = WorkService.FiscalUrl;
+            dto.IsConnected = WorkService.isConnectedFiscal;
+            return Ok(dto);
+        }
+
+        [HttpGet]
+        public IHttpActionResult PrintDayReportWitoutNull()
+        {
+            Uri uri = new Uri(WorkService.FiscalUrl+ "/cgi/proc/printreport?10");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "GET";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+            System.Net.ServicePointManager.Expect100Continue = false;
+            request.Credentials = credentialCache;
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                return Ok(responseString);
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult GetSumInFiscal()
+        {
+            return Ok(WorkService.getSuminSafe());
+        }
+        [HttpGet]
+        public IHttpActionResult GetMoneyFromSafe()
+        {
+            var sum = WorkService.getSuminSafe();
+            var obnule = WorkService.Obnule();
+            if (obnule == true)
+            {
+                return Ok(sum+" "+"дістано з каси");
+            }
+            else
+            {
+                return Ok("Error");
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult PrintReportByProducts()
+        {
+            Uri uri = new Uri(WorkService.FiscalUrl + "/cgi/proc/printreport?20");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "GET";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+            System.Net.ServicePointManager.Expect100Continue = false;
+            request.Credentials = credentialCache;
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                if (!responseString.Contains("err"))
+                {
+
+                    if (WorkService.Obnule() == true)
+                    {
+                        return Ok(responseString);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult PrintReportByProductsObnul()
+        {
+            Uri uri = new Uri(WorkService.FiscalUrl + "/cgi/proc/printreport?21");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "GET";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+            System.Net.ServicePointManager.Expect100Continue = false;
+            request.Credentials = credentialCache;
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                if (!responseString.Contains("err"))
+                {
+
+                    if (WorkService.Obnule() == true)
+                    {
+                        return Ok(responseString);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+        }
+        [HttpGet]
+        public IHttpActionResult PrintDayReportWithNull()
+        {
+            Uri uri = new Uri(WorkService.FiscalUrl + "/cgi/proc/printreport?0");
+            WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+            request.Method = "GET";
+            var credentialCache = new CredentialCache();
+            credentialCache.Add(
+              new Uri(uri.GetLeftPart(UriPartial.Authority)), // request url's host
+              "Digest",  // authentication type 
+              new NetworkCredential("service", "751426") // credentials 
+            );
+            System.Net.ServicePointManager.Expect100Continue = false;
+            request.Credentials = credentialCache;
+            WebResponse response = request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                String responseString = reader.ReadToEnd();
+                if (!responseString.Contains("err"))
+                {
+                    
+                    if(WorkService.Obnule()==true)
+                    {
+                        return Ok(responseString);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+        }
         // GET api/values/5
         public string Get(int id)
         {
@@ -417,7 +650,8 @@ namespace BackEnd.Controllers
             {
                 var products = JsonConvert.DeserializeObject<List<ProductInCheckDto>>(str[0]);
                 var check = JsonConvert.DeserializeObject<CheckDto>(str[1]);
-                WorkService.EndCheck(products, check);
+                var IsWIthAdress = JsonConvert.DeserializeObject<string>(str[2]);
+                WorkService.EndCheck(products, check, IsWIthAdress);
                 return Ok();
             }
             else
@@ -436,7 +670,8 @@ namespace BackEnd.Controllers
                 var products = JsonConvert.DeserializeObject<List<ProductInCheckDto>>(str[0]);
                 var check = JsonConvert.DeserializeObject<CheckDto>(str[1]);
                 var Creditor = JsonConvert.DeserializeObject<string>(str[2]);
-                WorkService.EndCheckCredit(products, check, Creditor);
+                var IsWIthAdress = JsonConvert.DeserializeObject<string>(str[3]);
+                WorkService.EndCheckCredit(products, check, Creditor, IsWIthAdress);
                 return Ok();
             }
             else

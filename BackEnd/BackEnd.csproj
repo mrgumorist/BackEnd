@@ -181,6 +181,7 @@
     <Compile Include="Entities\ProductReport.cs" />
     <Compile Include="Entities\Spisannya.cs" />
     <Compile Include="Entities\SpisannyaOnAnotherMarket.cs" />
+    <Compile Include="Entities\StaticValuebles.cs" />
     <Compile Include="Entities\Transaction.cs" />
     <Compile Include="Entities\TransactionType.cs" />
     <Compile Include="Global.asax.cs">
@@ -250,12 +251,19 @@
     <Compile Include="Migrations\202003251556062_addedspisanya.designer.cs">
       <DependentUpon>202003251556062_addedspisanya.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012291302104_fefe.cs" />
+    <Compile Include="Migrations\202012291302104_fefe.designer.cs">
+      <DependentUpon>202012291302104_fefe.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelsDto\CheckDto.cs" />
     <Compile Include="ModelsDto\CreditDto.cs" />
     <Compile Include="ModelsDto\DateDto.cs" />
     <Compile Include="ModelsDto\DatesDto.cs" />
+    <Compile Include="ModelsDto\FiscalDto.cs" />
+    <Compile Include="ModelsDto\FiscalProductDto.cs" />
     <Compile Include="ModelsDto\InAndOuts.cs" />
+    <Compile Include="ModelsDto\NeededSumDto.cs" />
     <Compile Include="ModelsDto\ProductDto.cs" />
     <Compile Include="ModelsDto\ProductInCheckDto.cs" />
     <Compile Include="ModelsDto\UserDto.cs" />
@@ -397,6 +405,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003251556062_addedspisanya.resx">
       <DependentUpon>202003251556062_addedspisanya.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012291302104_fefe.resx">
+      <DependentUpon>202012291302104_fefe.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

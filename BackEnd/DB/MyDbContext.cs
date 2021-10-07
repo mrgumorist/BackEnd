@@ -32,6 +32,7 @@ namespace BackEnd.DB
         public DbSet<SpisannyaOnAnotherMarket> SpisannyaOnAnotherMarket { get; set; }
         public DbSet<Lesia> LesiaS { get; set; }
         public DbSet<Lena> LenaS { get; set; }
+        public DbSet<StaticValueble> StaticValuebles { get; set; }
     }
     
     
