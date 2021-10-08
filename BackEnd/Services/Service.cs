@@ -42,8 +42,16 @@ namespace BackEnd.Services
         public double price { get; set; }
         public string name { get; set; }
         public double qty { get; set; }
+        [JsonProperty("uktzed", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public long uktzed { get; set; }
+        [JsonProperty("excise", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public List<excise> excise { get; set; } 
     }
 
+    public class excise
+    {
+        public string stamp { get; set; }
+    }
     public class F
     {
         public S S { get; set; }
@@ -62,7 +70,7 @@ namespace BackEnd.Services
         {
             try
             {
-                var value= apiContext.StaticValuebles.FirstOrDefault(x => x.Name == "Url");
+                var value = apiContext.StaticValuebles.FirstOrDefault(x => x.Name == "Url");
                 if (value != null)
                     FiscalUrl = value.Value;
             }
@@ -74,7 +82,7 @@ namespace BackEnd.Services
 
         public static double Sum(double sum)
         {
-            b:
+        b:
             List<Product> products = new List<Product>();
             double sumf = 0;
             double neededsum = sum;
@@ -92,7 +100,7 @@ namespace BackEnd.Services
 
                 }
             }
-            if(sumf>neededsum+100)
+            if (sumf > neededsum + 100)
             {
                 goto b;
             }
@@ -161,7 +169,7 @@ namespace BackEnd.Services
         public static bool Obnule()
         {
             bool result = false;
-            double sum = getSuminSafe() *-1;
+            double sum = getSuminSafe() * -1;
             RootIO root = new RootIO();
             iO iO = new iO();
             iO.IO = new IO2() { sum = sum };
@@ -169,7 +177,7 @@ namespace BackEnd.Services
             list.Add(iO);
             root.IO = list;
             string json = JsonConvert.SerializeObject(root);
-            Uri uri = new Uri(FiscalUrl+"/cgi/chk");
+            Uri uri = new Uri(FiscalUrl + "/cgi/chk");
             WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
             request.Method = "POST";
             var credentialCache = new CredentialCache();
@@ -187,7 +195,7 @@ namespace BackEnd.Services
 
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
-               // string json = File.ReadAllText("json.txt");
+                // string json = File.ReadAllText("json.txt");
                 streamWriter.Write(json);
             }
 
@@ -196,7 +204,8 @@ namespace BackEnd.Services
             {
                 StreamReader reader = new StreamReader(stream, Encoding.UTF8);
                 String responseString = reader.ReadToEnd();
-                if (!(responseString.Contains("err"))){
+                if (!(responseString.Contains("err")))
+                {
                     result = true;
                 }
                 else
@@ -208,7 +217,7 @@ namespace BackEnd.Services
         }
         public static double getSuminSafe()
         {
-            Uri uri = new Uri(FiscalUrl+"/cgi/rep/pay");
+            Uri uri = new Uri(FiscalUrl + "/cgi/rep/pay");
             WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
             request.Method = "GET";
             var credentialCache = new CredentialCache();
@@ -218,7 +227,7 @@ namespace BackEnd.Services
               new NetworkCredential("service", "751426") // credentials 
             );
             System.Net.ServicePointManager.Expect100Continue = false;
-            List<GetSumObject> objects = null ;
+            List<GetSumObject> objects = null;
 
             request.Credentials = credentialCache;
             WebResponse response = request.GetResponse();
@@ -233,7 +242,7 @@ namespace BackEnd.Services
             {
                 sum += item.sum;
             }
-           
+
             return sum;
         }
         public static int Login(string login, string password)
@@ -256,7 +265,7 @@ namespace BackEnd.Services
         {
             List<UserDto> users = new List<UserDto>();
             List<User> userss = apiContext.Users.ToList();
-           foreach (var item in userss)
+            foreach (var item in userss)
             {
                 var lol = item;
                 UserDto user = new UserDto() { ID = lol.ID, LastLogin = lol.LastLogin, Login = lol.Login, Name = lol.Name, Password = lol.Password, Surname = lol.Surname, UsersType = lol.UsersType.Name };
@@ -292,7 +301,7 @@ namespace BackEnd.Services
         {
             int id = int.Parse(user.UsersType);
             var UsersType = apiContext.UsersTypes.First(x => x.Id == id);
-            var kek = new User() { Name = user.Name, Login = user.Login, LastLogin = user.LastLogin, Password = user.Password, Surname = user.Surname, UsersType = UsersType, ID=user.ID };
+            var kek = new User() { Name = user.Name, Login = user.Login, LastLogin = user.LastLogin, Password = user.Password, Surname = user.Surname, UsersType = UsersType, ID = user.ID };
             apiContext.Users.First(x => x.ID == user.ID).LastLogin = kek.LastLogin;
             apiContext.Users.First(x => x.ID == user.ID).Login = kek.Login;
             apiContext.Users.First(x => x.ID == user.ID).Password = kek.Password;
@@ -303,7 +312,7 @@ namespace BackEnd.Services
         }
         public static void SetLastLogin(int ID)
         {
-            apiContext.Users.First(x => x.ID ==ID).LastLogin = DateTime.Now;
+            apiContext.Users.First(x => x.ID == ID).LastLogin = DateTime.Now;
             apiContext.SaveChanges();
         }
         public static void ChangePasswordById(int ID, string newpass)
@@ -320,7 +329,7 @@ namespace BackEnd.Services
         public static List<ProductDto> GetProducts()
         {
             DeleteProductsWithMinus();
-               var list = apiContext.ProductsAvaliale.AsEnumerable().ToList();
+            var list = apiContext.ProductsAvaliale.AsEnumerable().ToList();
             List<ProductDto> results = new List<ProductDto>();
             foreach (var item in list)
             {
@@ -334,14 +343,16 @@ namespace BackEnd.Services
                 productDto.Name = item.Name;
                 productDto.SpecialCode = item.SpecialCode;
                 productDto.Price = item.Price;
+                productDto.IsAkcis = item.IsAkcis;
+                productDto.Uktzed = item.Uktzed;
                 results.Add(productDto);
             }
             return results;
         }
         public static bool IsExists(string specialcode)
         {
-            List<Product> results =  apiContext.ProductsAvaliale.AsEnumerable().Where(x => x.SpecialCode.Equals(specialcode)).ToList();
-            if(results.Count==0)
+            List<Product> results = apiContext.ProductsAvaliale.AsEnumerable().Where(x => x.SpecialCode.Equals(specialcode)).ToList();
+            if (results.Count == 0)
             {
                 return false;
             }
@@ -349,7 +360,7 @@ namespace BackEnd.Services
         }
         public static void AddProduct(ProductDto product)
         {
-            Product product1 = new Product() { Name = product.Name, Count = product.Count, Description = product.Description, IsNumurable = product.IsNumurable, Massa = product.Massa, SpecialCode = product.SpecialCode, Price=product.Price};
+            Product product1 = new Product() { Name = product.Name, Count = product.Count, Description = product.Description, IsNumurable = product.IsNumurable, Massa = product.Massa, SpecialCode = product.SpecialCode, Price = product.Price, IsAkcis=product.IsAkcis, Uktzed=product.Uktzed };
             apiContext.ProductsAvaliale.Add(product1);
             //Transaction transaction = new Transaction();
             //transaction.transactionType = apiContext.TransactionTypes.First(x => x.Name == "AddedToStorage");
@@ -369,6 +380,8 @@ namespace BackEnd.Services
             apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Count = product.Count;
             apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Description = product.Description;
             apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Price = product.Price;
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).IsAkcis = product.IsAkcis;
+            apiContext.ProductsAvaliale.FirstOrDefault(x => x.ID == product.ID).Uktzed = product.Uktzed;
             apiContext.SaveChanges();
         }
         public static string GetPassByID(int ID)
@@ -391,24 +404,26 @@ namespace BackEnd.Services
             List<ProductDto> products = new List<ProductDto>();
             foreach (var item in apiContext.ProductsAvaliale)
             {
-                if(item.SpecialCode== Query)
+                if (item.SpecialCode == Query)
                 {
                     ProductDto productDto = new ProductDto();
                     productDto.CameToTheStorage = item.CameToTheStorage;
                     productDto.Count = item.Count;
                     productDto.Description = item.Description;
                     productDto.ID = item.ID;
+                    productDto.IsAkcis = item.IsAkcis;
                     productDto.IsNumurable = item.IsNumurable;
                     productDto.Massa = item.Massa;
                     productDto.Name = item.Name;
                     productDto.SpecialCode = item.SpecialCode;
+                    productDto.Uktzed = item.Uktzed;
                     productDto.Price = item.Price;
                     products.Add(productDto);
                 }
             }
             return products;
         }
-        public static List<ProductDto>  GetProductDtosByName(string Query)
+        public static List<ProductDto> GetProductDtosByName(string Query)
         {
             List<ProductDto> products = new List<ProductDto>();
             foreach (var item in apiContext.ProductsAvaliale)
@@ -424,7 +439,9 @@ namespace BackEnd.Services
                     productDto.Massa = item.Massa;
                     productDto.Name = item.Name;
                     productDto.SpecialCode = item.SpecialCode;
+                    productDto.IsAkcis = item.IsAkcis;
                     productDto.Price = item.Price;
+                    productDto.Uktzed = item.Uktzed;
                     products.Add(productDto);
                 }
             }
@@ -438,14 +455,14 @@ namespace BackEnd.Services
         {
             return apiContext.ProductsAvaliale.First(x => x.ID == ID).Count;
         }
-        public  static void EndCheck(List<ProductInCheckDto> products, CheckDto check, string IsWithAdress)
+        public static void EndCheck(List<ProductInCheckDto> products, CheckDto check, string IsWithAdress)
         {
             //DeleteEmptyChecks();
             apiContext.Checks.First(x => x.ID == check.ID).SumPrice = check.SumPrice;
             apiContext.Checks.First(x => x.ID == check.ID).DateCloseOfCheck = check.DateCloseOfCheck.Value;
             apiContext.Checks.First(x => x.ID == check.ID).TypeOfPay = check.TypeOfPay;
             apiContext.SaveChanges();
-            
+
             foreach (var item in products)
             {
                 if (item.IDOfProduct != 0)
@@ -458,6 +475,8 @@ namespace BackEnd.Services
                     productInCheck.Massa = item.Massa;
                     productInCheck.Name = item.Name;
                     productInCheck.Price = item.Price.Value;
+                    productInCheck.IsAkcis = item.IsAkcis;
+                    productInCheck.Uktzed = item.Uktzed;
                     productInCheck.SpecialCode = item.SpecialCode;
                     productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
                     apiContext.ProductsInCheck.Add(productInCheck);
@@ -482,6 +501,7 @@ namespace BackEnd.Services
                     productInCheck.Name = item.Name;
                     productInCheck.Price = item.Price.Value;
                     productInCheck.SpecialCode = item.SpecialCode;
+                    productInCheck.Uktzed = item.Uktzed;
                     productInCheck.Check = apiContext.Checks.First(x => x.ID == check.ID);
                     apiContext.ProductsInCheck.Add(productInCheck);
                 }
@@ -511,10 +531,18 @@ namespace BackEnd.Services
                                     count = item.Massa.Value;
                                 }
                                 FiscalProductDto fiscal = new FiscalProductDto();
+                                if (item.IsAkcis)
+                                {
+                                    foreach (var akc in item.Akcises)
+                                    {
+                                        fiscal.AKCIZES.Add(akc);
+                                    }
+                                }
                                 fiscal.COUNT = count;
                                 fiscal.NAME = name;
                                 fiscal.PRICE = price;
                                 fiscal.SPECIALCODE = number;
+                                fiscal.Uktzed = item.Uktzed;
                                 fiscalProductDtos.Add(fiscal);
                             }
                             catch
@@ -532,20 +560,34 @@ namespace BackEnd.Services
         public static void PrintFiscal(List<FiscalProductDto> list)
         {
             Root root = new Root();
-            List <F> flist=new List<F>();
-            foreach(var item in list)
+            List<F> flist = new List<F>();
+            foreach (var item in list)
             {
                 S s = new S();
                 s.code = item.SPECIALCODE;
                 s.price = item.PRICE;
                 s.qty = item.COUNT;
                 s.name = item.NAME;
+                s.uktzed = item.Uktzed;
+                if(item.AKCIZES.Count!=0)
+                {
+                    s.excise= new List<excise>();
+                    foreach (var akc in item.AKCIZES)
+                    {
+                        s.excise.Add(new excise() { stamp = akc });
+                    }
+                   
+                }
+                else
+                {
+                    item.AKCIZES = null;
+                }
                 F f = new F();
                 f.S = s;
                 flist.Add(f);
             }
             root.F = flist;
-            Uri uri = new Uri(FiscalUrl+"/cgi/chk");
+            Uri uri = new Uri(FiscalUrl + "/cgi/chk");
             WebRequest request = WebRequest.Create(uri) as HttpWebRequest;
             request.Method = "POST";
             var credentialCache = new CredentialCache();
@@ -562,7 +604,8 @@ namespace BackEnd.Services
 
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
-                streamWriter.Write(JsonConvert.SerializeObject(root));
+                string obj = JsonConvert.SerializeObject(root);
+                streamWriter.Write(obj);
             }
 
             WebResponse response = request.GetResponse();
@@ -674,7 +717,7 @@ namespace BackEnd.Services
             {
                 if (date.Day == item.DateCloseOfCheck.Day && date.Month == item.DateCloseOfCheck.Month && date.Year == item.DateCloseOfCheck.Year)
                 {
-                    CheckDto check = new CheckDto() { DateCloseOfCheck=item.DateCloseOfCheck, DateCreatingOfCheck = item.DateCreatingOfCheck, ID=item.ID, SumPrice = item.SumPrice, TypeOfPay=item.TypeOfPay};
+                    CheckDto check = new CheckDto() { DateCloseOfCheck = item.DateCloseOfCheck, DateCreatingOfCheck = item.DateCreatingOfCheck, ID = item.ID, SumPrice = item.SumPrice, TypeOfPay = item.TypeOfPay };
                     checksDtos.Add(check);
                 }
             }
@@ -684,11 +727,11 @@ namespace BackEnd.Services
         {
             foreach (var item in apiContext.ProductsAvaliale)
             {
-                if(item.Count<0)
+                if (item.Count < 0)
                 {
                     item.Count = 0;
                 }
-                
+
             }
             apiContext.SaveChanges();
         }
@@ -697,9 +740,9 @@ namespace BackEnd.Services
             List<Check> forDelete = new List<Check>();
             foreach (var item in apiContext.Checks)
             {
-                if (item.DateCreatingOfCheck.Date==DateTime.Now.Date)
+                if (item.DateCreatingOfCheck.Date == DateTime.Now.Date)
                 {
-                    if(item.Products.Count==0)
+                    if (item.Products.Count == 0)
                     {
                         forDelete.Add(item);
                     }
@@ -731,9 +774,9 @@ namespace BackEnd.Services
             List<Credit> credits = apiContext.Creditors.ToList();
             foreach (var item in credits)
             {
-              
-                    CreditDto check = new CreditDto() { ID = item.ID, dateOfGetCredit=item.dateOfGetCredit, Initsials=item.Initsials, Sum=item.Sum};
-                    creditDtos.Add(check);
+
+                CreditDto check = new CreditDto() { ID = item.ID, dateOfGetCredit = item.dateOfGetCredit, Initsials = item.Initsials, Sum = item.Sum };
+                creditDtos.Add(check);
             }
             return creditDtos;
         }
@@ -750,7 +793,7 @@ namespace BackEnd.Services
         }
         public static void UpdateCredit(CreditDto credit)
         {
-            if(credit.Sum==0)
+            if (credit.Sum == 0)
             {
                 apiContext.Creditors.Remove(apiContext.Creditors.First(x => x.ID == credit.ID));
             }

@@ -14,7 +14,9 @@ namespace BackEnd.Entities
         public int ID { get; set; }
         public string Name { get; set; }
         public string SpecialCode { get; set; }
+        public long Uktzed { get; set; } = 0;
         public string Description { get; set; }
+        public bool IsAkcis { get; set; } = false;
         public int? Count { get; set; } //Кількість або скільки грам
         public double? Massa { get; set; } //Кількість або скільки грам
         public bool? IsNumurable { get; set; } //1 - mass

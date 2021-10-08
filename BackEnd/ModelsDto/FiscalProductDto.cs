@@ -12,5 +12,7 @@ namespace BackEnd.ModelsDto
         public double PRICE { get; set; }
         public double COUNT { get; set; }
         public string NAME { get; set; }
+        public long Uktzed { get; set; }
+        public List<string> AKCIZES { get; set; } = new List<string>();
     }
 }

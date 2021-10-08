@@ -11,6 +11,8 @@ namespace BackEnd.ModelsDto
         public string Name { get; set; }
         public string SpecialCode { get; set; }
         public string Description { get; set; }
+        public bool IsAkcis { get; set; }
+        public long Uktzed { get; set; } = 0;
         public int? Count { get; set; } //Кількість або скільки грам
         public double? Massa { get; set; } //Кількість або скільки грам
         public bool? IsNumurable { get; set; } //1 - mass

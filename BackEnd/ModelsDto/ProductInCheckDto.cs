@@ -16,6 +16,9 @@ namespace BackEnd.ModelsDto
         public double? Massa { get; set; } = 0;
         public bool? IsNumurable { get; set; }
         public double? Price { get; set; }
+        public long Uktzed { get; set; } = 0;
+        public bool IsAkcis { get; set; }
+        public List<string> Akcises { get; set; }
         public virtual CheckDto Check { get; set; }
     }
 }
